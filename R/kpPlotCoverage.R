@@ -23,6 +23,7 @@
 #' @param col    (color) The background color of the regions. (defaults to "#0e87eb")
 #' @param ymax    (numeric) The maximum value to be plotted on the data.panel. If NULL the maximum coverage is used. (defaults to NULL)
 #' @param clipping  (boolean) Only used if zooming is active. If TRUE, the data representation will be not drawn out of the drawing area (i.e. in margins, etc) even if the data overflows the drawing area. If FALSE, the data representation may overflow into the margins of the plot. (defaults to TRUE)
+#' @param free.y (boolean) If TRUE, allow the upper limit of y to differ by chromosome. (defaults to FALSE)
 #' @param ...    The ellipsis operator can be used to specify any additional graphical parameters. Any additional parameter will be passed to the internal calls to the R base plotting functions. 
 #' 
 #' 
@@ -69,7 +70,7 @@
 #'@export kpPlotCoverage
 
 
-kpPlotCoverage <- function(karyoplot, data, data.panel=1, r0=NULL, r1=NULL, col="#0e87eb", ymax=NULL, clipping=TRUE, ...) {
+kpPlotCoverage <- function(karyoplot, data, data.panel=1, r0=NULL, r1=NULL, col="#0e87eb", ymax=NULL, clipping=TRUE, free.y=FALSE, ...) {
   #Check parameters
   #karyoplot
   if(missing(karyoplot)) stop("The parameter 'karyoplot' is required")
@@ -100,6 +101,7 @@ kpPlotCoverage <- function(karyoplot, data, data.panel=1, r0=NULL, r1=NULL, col=
   if(is.null(ymax)) ymax <- max(max(coverage.lvl))
   
   for(chr in names(ends)) {
+    if (free.y) ymax <- max(coverage.lvl[[chr]])
     kpBars(karyoplot=karyoplot, chr=chr, x0=starts[[chr]], x1=ends[[chr]], 
            y0=0, y1=coverage.lvl[[chr]], ymin=0, ymax=ymax, 
            r0=r0, r1=r1, data.panel=data.panel, col=col, border=col, 
